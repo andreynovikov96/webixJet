@@ -1,24 +1,22 @@
 import {JetView} from "webix-jet";
 
-export default class multiView extends JetView{
+export default class settingsView extends JetView{
 	config(){
-		return { 
-			rows: [
-				{
-					view:"list",
-					select:true,
-					data:[
-						{value:"Countries", id:"Countries"},
-						{value:"Statuses", id:"Statuses"}
-					],
-
-				},
-				{
-					view:"select",
-					label:"languages",
-					options:["English", "Russian"]
-				}
+		const _ = this.app.getService("locale")._;
+		return {
+			rows:[
+				{ template:"Settings", type:"header" },
+				{ name:"lang", optionWidth: 120, view:"segmented", label: _("Language"), options:[
+					{ id:"en", value:"English" },
+					{ id:"ru", value:"Russian" }
+				], click:() => this.toggleLanguage() }, 
+				{}
 			]
 		};
+	}
+	toggleLanguage(){
+		const langs = this.app.getService("locale");
+		const value = this.getRoot().queryView({ name:"lang" }).getValue();
+		langs.setLang(value);
 	}
 }

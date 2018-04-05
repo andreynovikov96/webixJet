@@ -5,6 +5,7 @@
     },
     "globals":{
         "webix":true,
+        "$$":true,
         "scheduler":true,
         "APPNAME":true, "VERSION":true, "PRODUCTION":true
     },
