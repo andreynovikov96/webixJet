@@ -4,30 +4,38 @@ import Form from "views/contactsForm";
 
 export default class ContactsView extends JetView{
 	config(){
+		const _ = this.app.getService("locale")._;
+
 		let header = {
 			view: "template", 
-			template: "Contacts",
+			template: _("Contacts"),
 			type:"header"
 		};
 
 		let contactsList = {
 			view: "list",
-			id:"mylist",
 			select:true,
 			borderless:true,
 			type: {
 				height:70
 			},
 			template:"<img class='contactsCircle'><span class='contactsList'>#Name#</span><span class='contactsList'>#Email#</span><span class='webix_icon fa-times delete'></span>",
+			on:{
+				onAfterSelect: (id) =>{
+					let item = this.list.getItem(id);
+					this.setParam("id", id, true);
+					this.app.callEvent("onContactSelect", [item]);
+				}
+			},
 			onClick: {
 				"fa-times":function(ev, id) {
-					this.remove(id);
+					contacts.remove(id);
 				}
 			}
 		};
 
 		let button = {
-			view:"button", value:"Add", click:() => {this.add();}
+			view:"button", value:_("Add"), click:() => {this.add();}
 		};
 
 		return { 
@@ -43,7 +51,7 @@ export default class ContactsView extends JetView{
 		};
 	}
 	add() {
-		this.contactsList.add({ 
+		contacts.add({ 
 			Name:"Alex Wanny",
 			Email:"alex@gmail.com",
 			Status:1,
@@ -51,16 +59,19 @@ export default class ContactsView extends JetView{
 		});
 	}
 	init(view){
-		this.contactsList = this.getRoot().queryView({ view: "list"});
-		view.queryView({ view:"list"}).parse(contacts);
+		this.list = view.queryView({ view: "list"});
+		this.list.parse(contacts);
+		this.on(this.app,"onFormSave", (data) => {
+			let id = this.list.getSelectedId();
+			if(id){
+				this.list.updateItem(id, data);
+			}
+		});
 	}
 	urlChange(){
-		const contactsList = $$("mylist");
-		const id = contactsList.getFirstId();
-		
-		if (id && contactsList.exists(id)){
-			contactsList.select(id);
-		}
+		let id = this.getParam("id");
+		if (id && this.list.exists(id)) this.list.select(id);
+		else this.list.select(1);
 	}
 
 }

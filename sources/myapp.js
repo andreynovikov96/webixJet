@@ -8,10 +8,10 @@ webix.ready(() => {
 		start:		"/top/contacts",
 		debug:true
 	});
+	app.use(plugins.Locale);
 	app.render();
 
 	app.attachEvent("app:error:resolve", function(name, error){
 		window.console.error(error);
 	});
-	app.use(plugins.Locale);
 });

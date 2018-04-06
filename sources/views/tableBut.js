@@ -2,6 +2,8 @@ import {JetView} from "webix-jet";
 
 export default class TableBut extends JetView{
 	config(){
+		const _ = this.app.getService("locale")._;
+
 		let table = {
 			view:"datatable",
 			autoConfig:true,
@@ -13,8 +15,8 @@ export default class TableBut extends JetView{
 
 		let buttons = {
 			cols: [
-				{view:"button", value:"Add", click:() => {this.add();}},
-				{view:"button", value:"Delete", click:() => {this.remove();}}
+				{view:"button", value:_("Add"), click:() => this.add()},
+				{view:"button", value:_("Delete"), click:() => this.remove()}
 			]
 		};
 
@@ -22,12 +24,5 @@ export default class TableBut extends JetView{
 	}
 	init(){
 		this.table = this.getRoot().queryView({view:"datatable"});
-	}
-	add() {
-		this.table.add({ Name:"New"});
-	}
-	remove() {
-		let id = this.table.getSelectedId();
-		if(id) this.table.remove(id);
 	}
 }
